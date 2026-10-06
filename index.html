@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tomboy</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    margin: 0;
+    font-family: 'Georgia', 'Times New Roman', serif;
+    background: #eee5d2;
+    color: #4a3824;
+    overflow: hidden;
+}
+
+/* =========================
+   APP
+========================= */
+
+.app {
+    width: 100%;
+    height: 100vh;
+    position: relative;
+    overflow: hidden;
+}
+
+/* =========================
+   SLIDES
+========================= */
+
+.slide {
+    position: absolute;
+    inset: 0;
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    opacity: 0;
+    transform: translateX(100%);
+    transition: 0.6s ease;
+    pointer-events: none;
+}
+
+.slide.active {
+    opacity: 1;
+    transform: translateX(0);
+    pointer-events: auto;
+}
+
+.slide.old {
+    transform: translateX(-100%);
+}
+
+/* =========================
+   LOGO — UPDATED
+========================= */
+
+.logo {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.logo-img {
+    width: 160px;
+    height: auto;
+    margin: 0 auto 10px;
+    display: block;
+}
+
+.logo h1 {
+    margin: 8px 0 3px;
+    letter-spacing: 5px;
+    font-size: 26px;
+    font-weight: 600;
+    color: #2c3e2f;
+}
+
+.logo p {
+    margin: 0;
+    font-size: 13px;
+    letter-spacing: 4px;
+    color: #8d6738;
+    font-weight: 500;
+}
+
+/* =========================
+   CARDS
+========================= */
+
+.card {
+    width: min(420px, 95%);
+    background: rgba(255,255,255,0.45);
+
+    border: 1px solid #c8b28d;
+    border-radius: 18px;
+
+    padding: 25px;
+
+    box-shadow:
+        0 10px 30px rgba(72,50,25,0.12);
+}
+
+/* =========================
+   BUTTON
+========================= */
+
+.main-button {
+    margin-top: 25px;
+
+    width: 100%;
+    max-width: 350px;
+
+    padding: 15px;
+
+    border: none;
+    border-radius: 12px;
+
+    background: #8d6738;
+    color: white;
+
+    font-size: 15px;
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition: 0.25s;
+}
+
+.main-button:active {
+    transform: scale(0.96);
+}
+
+/* =========================
+   SLIDE 4 CONNECTION
+========================= */
+
+.connection-box {
+    text-align: center;
+}
+
+.connection-icon {
+    width: 100px;
+    height: 100px;
+
+    margin: 0 auto 25px;
+
+    border: 4px solid #b18a52;
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 42px;
+
+    animation: connectionPulse 1.5s infinite;
+}
+
+@keyframes connectionPulse {
+    0% { box-shadow: 0 0 0 0 rgba(177,138,82,0.5); }
+    70% { box-shadow: 0 0 0 25px rgba(177,138,82,0); }
+    100% { box-shadow: 0 0 0 0 rgba(177,138,82,0); }
+}
+
+.connection-status {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.connection-dots::after {
+    content: "";
+    animation: dots 1.5s infinite;
+}
+
+@keyframes dots {
+    0% { content: ""; }
+    33% { content: "."; }
+    66% { content: ".."; }
+    100% { content: "..."; }
+}
+
+.connected {
+    color: #668c4b;
+}
+
+.check {
+    display: none;
+    font-size: 50px;
+}
+
+/* =========================
+   LIGHTS
+========================= */
+
+.lights-title {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.lights-title h2 {
+    margin: 0;
+    letter-spacing: 4px;
+}
+
+.lights-title p {
+    margin-top: 7px;
+    font-size: 12px;
+    opacity: 0.7;
+}
+
+/* =========================
+   LIGHT CARD
+========================= */
+
+.light-card {
+    width: min(420px, 95%);
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 15px 17px;
+
+    margin: 6px 0;
+
+    background: rgba(255,255,255,0.55);
+
+    border: 1px solid #cbb58f;
+    border-radius: 14px;
+
+    transition: 0.3s;
+}
+
+.light-name {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    font-weight: bold;
+}
+
+.light-icon {
+    font-size: 25px;
+}
+
+/* =========================
+   SWITCH
+========================= */
+
+.switch {
+    width: 58px;
+    height: 31px;
+
+    background: #aaa;
+
+    border-radius: 30px;
+
+    padding: 3px;
+
+    cursor: pointer;
+
+    transition: 0.3s;
+}
+
+.switch-knob {
+    width: 25px;
+    height: 25px;
+
+    background: white;
+
+    border-radius: 50%;
+
+    transition: 0.3s;
+
+    box-shadow: 0 2px 5px rgba(0,0,0,0.25);
+}
+
+.switch.on {
+    background: #c39445;
+}
+
+.switch.on .switch-knob {
+    transform: translateX(27px);
+}
+
+/* =========================
+   LIGHT GLOW
+========================= */
+
+.room-light {
+    width: 90px;
+    height: 90px;
+
+    border-radius: 50%;
+
+    background: #cfc6b4;
+
+    margin: 12px auto;
+
+    transition:
+        background 0.5s,
+        box-shadow 0.5s,
+        transform 0.5s;
+}
+
+/* ON STATE */
+
+.room-light.glowing {
+    background: #fff3ad;
+
+    transform: scale(1.08);
+
+    box-shadow:
+        0 0 15px #ffe47a,
+        0 0 35px #ffd84d,
+        0 0 70px rgba(255,210,60,0.7);
+}
+
+/* =========================
+   ROOM PREVIEW
+========================= */
+
+.preview {
+    width: min(420px, 95%);
+
+    margin-bottom: 10px;
+
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.room {
+    text-align: center;
+
+    background: rgba(255,255,255,0.4);
+
+    border: 1px solid #cbb58f;
+    border-radius: 14px;
+
+    padding: 12px;
+}
+
+.room h3 {
+    margin: 5px 0;
+    font-size: 12px;
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media(max-width:500px) {
+    .slide {
+        padding: 18px;
+    }
+
+    .logo-img {
+        width: 130px;
+    }
+
+    .logo h1 {
+        font-size: 21px;
+    }
+
+    .card {
+        padding: 20px;
+    }
+
+    .light-card {
+        width: 100%;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<!-- =====================================================
+     SLIDE 1
+===================================================== -->
+<section class="slide active" id="slide1">
+    <div class="logo">
+        <!-- Bading nakalimutan yung logo-->
+        <img 
+            src="Your paragraph text_20261006_212624_0000.png" 
+            alt="Villa Soléa Hotel & Villas" 
+            class="logo-img"
+        >
+        <h1>VILLA SOLÉA</h1>
+        <p>HOTEL & VILLAS</p>
+    </div>
+
+    <div class="card">
+        <h2>Welcome</h2>
+        <p>Welcome to Villa Soléa.</p>
+        <button class="main-button" onclick="nextSlide()">
+            START
+        </button>
+    </div>
+</section>
+
+<!-- =====================================================
+     SLIDE 2
+===================================================== -->
+<section class="slide" id="slide2">
+    <div class="logo">
+        <img 
+            src="Your paragraph text_20261006_212624_0000.png" 
+            alt="Villa Soléa Hotel & Villas" 
+            class="logo-img"
+        >
+        <h1>VILLA SOLÉA</h1>
+    </div>
+
+    <div class="card">
+        <h2>GUEST NUMBER</h2>
+        <p>Enter your guest number to continue.</p>
+        <input
+            id="password"
+            type="password"
+            placeholder="Number"
+            style="
+                width:100%;
+                padding:14px;
+                border-radius:10px;
+                border:1px solid #c8b28d;
+                background:#fffaf0;
+                margin-top:10px;
+            "
+        >
+        <button class="main-button" onclick="nextSlide()">
+            CONTINUE
+        </button>
+    </div>
+</section>
+
+<!-- =====================================================
+     SLIDE 3
+===================================================== -->
+<section class="slide" id="slide3">
+    <div class="logo">
+        <img 
+            src="Your paragraph text_20261006_212624_0000.png" 
+            alt="Villa Soléa Hotel & Villas" 
+            class="logo-img"
+        >
+        <h1>ROOM STATUS</h1>
+    </div>
+
+    <div class="card">
+        <h3>Villa Soléa</h3>
+        <p>Checking rooms and smart-home devices...</p>
+        <button class="main-button" onclick="nextSlide()">
+            CONTINUE
+        </button>
+    </div>
+</section>
+
+<!-- =====================================================
+     SLIDE 4 — CONNECTION
+===================================================== -->
+<section class="slide" id="slide4">
+    <div class="connection-box">
+        <div class="connection-icon" id="connectionIcon">
+            📡
+        </div>
+        <div class="connection-status" id="connectionStatus">
+            Connecting<span class="connection-dots"></span>
+        </div>
+        <p id="connectionText">
+            Connecting to Villa Soléa system
+        </p>
+        <button
+            class="main-button"
+            id="connectionButton"
+            style="display:none;"
+            onclick="nextSlide()"
+        >
+            CONTINUE
+        </button>
+    </div>
+</section>
+
+<!-- =====================================================
+     SLIDE 5 — LIGHT CONTROL
+===================================================== -->
+<section class="slide" id="slide5">
+    <div class="lights-title">
+        <h2>LIGHTS</h2>
+        <p>Control the lights in each room</p>
+    </div>
+
+    <!-- ROOM PREVIEW -->
+    <div class="preview">
+        <div class="room">
+            <div class="room-light" id="bedroomLight"></div>
+            <h3>BEDROOM</h3>
+        </div>
+        <div class="room">
+            <div class="room-light" id="livingLight"></div>
+            <h3>LIVING ROOM</h3>
+        </div>
+        <div class="room">
+            <div class="room-light" id="diningLight"></div>
+            <h3>DINING ROOM</h3>
+        </div>
+        <div class="room">
+            <div class="room-light" id="bathroomLight"></div>
+            <h3>BATHROOM</h3>
+        </div>
+    </div>
+
+    <!-- BEDROOM -->
+    <div class="light-card">
+        <div class="light-name">
+            <span class="light-icon">🛏️</span>
+            BEDROOM
+        </div>
+        <div
+            class="switch"
+            onclick="toggleLight('bedroom')"
+            id="bedroomSwitch"
+        >
+            <div class="switch-knob"></div>
+        </div>
+    </div>
+
+    <!-- LIVING -->
+    <div class="light-card">
+        <div class="light-name">
+            <span class="light-icon">🛋️</span>
+            LIVING ROOM
+        </div>
+        <div
+            class="switch"
+            onclick="toggleLight('living')"
+            id="livingSwitch"
+        >
+            <div class="switch-knob"></div>
+        </div>
+    </div>
+
+    <!-- DINING -->
+    <div class="light-card">
+        <div class="light-name">
+            <span class="light-icon">🍽️</span>
+            DINING ROOM
+        </div>
+        <div
+            class="switch"
+            onclick="toggleLight('dining')"
+            id="diningSwitch"
+        >
+            <div class="switch-knob"></div>
+        </div>
+    </div>
+
+    <!-- BATHROOM -->
+    <div class="light-card">
+        <div class="light-name">
+            <span class="light-icon">🚿</span>
+            BATHROOM
+        </div>
+        <div
+            class="switch"
+            onclick="toggleLight('bathroom')"
+            id="bathroomSwitch"
+        >
+            <div class="switch-knob"></div>
+        </div>
+    </div>
+</section>
+
+</div>
+
+<script>
+/* =====================================================
+   SLIDE SYSTEM
+===================================================== */
+let currentSlide = 1;
+
+function nextSlide() {
+    if (currentSlide >= 5) return;
+
+    const oldSlide = document.getElementById("slide" + currentSlide);
+    currentSlide++;
+    const newSlide = document.getElementById("slide" + currentSlide);
+
+    oldSlide.classList.remove("active");
+    oldSlide.classList.add("old");
+    newSlide.classList.add("active");
+
+    if (currentSlide === 4) {
+        startConnection();
+    }
+}
+
+/* =====================================================
+   CONNECTION ANIMATION
+===================================================== */
+function startConnection() {
+    const status = document.getElementById("connectionStatus");
+    const text = document.getElementById("connectionText");
+    const icon = document.getElementById("connectionIcon");
+    const button = document.getElementById("connectionButton");
+
+    button.style.display = "none";
+    icon.innerHTML = "📡";
+    status.classList.remove("connected");
+    status.innerHTML = 'Connecting<span class="connection-dots"></span>';
+    text.innerHTML = "Connecting to Villa Soléa system";
+
+    setTimeout(function() {
+        icon.innerHTML = "✓";
+        status.classList.add("connected");
+        status.innerHTML = "CONNECTED";
+        text.innerHTML = "Villa Soléa system is ready";
+        button.style.display = "block";
+    }, 3000);
+}
+
+/* =====================================================
+   LIGHT SYSTEM
+===================================================== */
+function toggleLight(room) {
+    const switchElement = document.getElementById(room + "Switch");
+    const lightElement = document.getElementById(room + "Light");
+    const isOn = switchElement.classList.contains("on");
+
+    if (isOn) {
+        switchElement.classList.remove("on");
+        lightElement.classList.remove("glowing");
+    } else {
+        switchElement.classList.add("on");
+        lightElement.classList.add("glowing");
+    }
+}
+</script>
+
+</body>
+</html>
